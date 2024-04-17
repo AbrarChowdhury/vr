@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { VRButton } from "three/addons/webxr/VRButton.js"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
+import speak from "./pollyHelper"
 let camera, mixer
 let renderer
 let scene
@@ -35,18 +36,19 @@ function init() {
 
   loader.load(
     // resource URL
-    "Soldier.glb",
+    "newModel.glb",
     // called when the resource is loaded
     function (gltf) {
       const model = gltf.scene
-      console.log(model)
-      model.position.z = -15
+    //   console.log(model)
+      model.position.z = -2
+      model.position.y = -1
       scene.add(model)
       // Play the first animation clip
       mixer = new THREE.AnimationMixer(model)
-      standAction = mixer.clipAction(gltf.animations[0])
-      runAction = mixer.clipAction(gltf.animations[1])
-      walkAction = mixer.clipAction(gltf.animations[3])
+      //   standAction = mixer.clipAction(gltf.animations[0])
+      //   runAction = mixer.clipAction(gltf.animations[1])
+      //   walkAction = mixer.clipAction(gltf.animations[3])
       animate()
       // Render loop
     },
@@ -61,9 +63,12 @@ function init() {
   )
 
   window.addEventListener("resize", onWindowResize)
-  document.getElementById("standButton").addEventListener("click", idle)
-  document.getElementById("runButton").addEventListener("click", startRun)
-  document.getElementById("walkButton").addEventListener("click", startWalk)
+  //   document.getElementById("runButton").addEventListener("click", startRun)
+  // document.getElementById("standButton").addEventListener("click", idle)
+  //   document.getElementById("walkButton").addEventListener("click", startWalk)
+  document
+    .getElementById("speak")
+    .addEventListener("click", () => speak("hi what are you doing?"))
 }
 
 function onWindowResize() {
@@ -81,18 +86,19 @@ function render() {
   mixer.update(0.01)
   renderer.render(scene, camera)
 }
-function startWalk() {
-  mixer.stopAllAction()
-  console.log("start walking")
-  walkAction.play()
-}
-function startRun() {
-  mixer.stopAllAction()
-  console.log("start walking")
-  runAction.play()
-}
-function idle() {
-  mixer.stopAllAction()
-  console.log("start walking")
-  standAction.play()
-}
+
+// function startWalk() {
+//   mixer.stopAllAction()
+//   console.log("start walking")
+//   walkAction.play()
+// }
+// function startRun() {
+//   mixer.stopAllAction()
+//   console.log("start walking")
+//   runAction.play()
+// }
+// function idle() {
+//   mixer.stopAllAction()
+//   console.log("start walking")
+//   standAction.play()
+// }

@@ -8,11 +8,18 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
     <link type="text/css" rel="stylesheet" href="main.css" />
+    <!-- <script src="config.js"></script> -->
+    <!-- <script src="polly.js"></script> -->
+
   </head>
   <body>
     <button id="standButton">stand</button>
     <button id="walkButton">walk</button>
     <button id="runButton">run</button>
+    <button id="speak">speak</button>
+    <audio id="audioPlayback" controls autoplay>
+      <source id="audioSource" type="audio/mp3" src="" />
+    </audio>
     <script type="module" src="main.js"></script>
   </body>
 </html>
