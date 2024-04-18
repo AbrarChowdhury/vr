@@ -8,6 +8,17 @@ let scene
 let avatar
 let dictionanry
 let standAction, walkAction, runAction
+
+let thisVisemeX = 0
+let thisVisemeV = 0
+let visemeDamp = 4
+let visemeK = 8
+let lastVisemX = 0
+let lastVisemV = 0
+let thisTarget = 1
+let thisVisemeIndex = 0
+let lastVisemeIndex = 0
+let springs = []
 const loader = new GLTFLoader()
 init()
 
@@ -83,13 +94,39 @@ function onWindowResize() {
   renderer.setSize(window.innerWidth, window.innerHeight)
 }
 
+let prevTime = performance.now()
 function animate() {
   renderer.setAnimationLoop(render)
+  requestAnimationFrame(animate)
 }
 
 function render() {
   mixer.update(0.01)
   renderer.render(scene, camera)
+  const currTime = performance.now()
+  // const delta = (currTime - prevTime) / 1000
+  const delta = 0.01
+  // console.log(delta)
+  thisVisemeX += thisVisemeV * delta
+  let acceleration = visemeK * (thisTarget - thisVisemeX)
+  let resistance = visemeDamp * thisVisemeV
+  thisVisemeV += (acceleration - resistance) * delta
+
+  avatar.children[0].morphTargetInfluences[lastVisemeIndex] = 1 - thisVisemeX
+  avatar.children[0].morphTargetInfluences[thisVisemeIndex] = thisVisemeX
+  // console.log(thisVisemeX)
+  let spring = {
+    x: thisVisemeX,
+    a: acceleration,
+    r: resistance,
+    v: thisVisemeV,
+  }
+  springs = [...springs, spring]
+  if (springs.length == 1000) {
+    console.log(spring)
+    console.table(springs)
+  }
+  prevTime = currTime
 }
 
 function changeMorphTargetByName(targetName) {
@@ -97,14 +134,14 @@ function changeMorphTargetByName(targetName) {
     console.error("Model not loaded yet.")
     return
   }
-
-  let targetIndex = dictionanry[targetName]
+  lastVisemeIndex = thisVisemeIndex
+  thisVisemeIndex = dictionanry[targetName]
 
   // Reset All influence
-  for (let i = 0; i < avatar.children[0].morphTargetInfluences.length; i++) {
-    avatar.children[0].morphTargetInfluences[i] = 0
-  }
-  avatar.children[0].morphTargetInfluences[targetIndex] = 1
+  // for (let i = 0; i < avatar.children[0].morphTargetInfluences.length; i++) {
+  //   avatar.children[0].morphTargetInfluences[i] = 0
+  // }
+  // avatar.children[0].morphTargetInfluences[targetIndex] = 1
 }
 
 function speak(text) {
