@@ -74,11 +74,11 @@ const visemes = [
   },
 ]
 
-function speak(text) {
+function speak(text,avatar) {
   visemes.map((vis) => {
     return new Promise((resolve) => {
       setTimeout(() => {
-        changeMorphTargetByName(visemeMap[vis])
+        changeMorphTargetByName(avatar,visemeMap[vis])
         // setPho(vis.value) // Resolve the promise with true once setPho is completed
         console.log(vis)
       }, vis.time)
@@ -223,7 +223,7 @@ function phonemeToViseme(phoneme) {
 
 
 export default speak
-function changeMorphTargetByName(targetName) {
+function changeMorphTargetByName(loadedModel,targetName) {
     if (!loadedModel) {
       console.error("Model not loaded yet.");
       return;

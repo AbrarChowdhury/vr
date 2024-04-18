@@ -1,10 +1,12 @@
 import * as THREE from "three"
 import { VRButton } from "three/addons/webxr/VRButton.js"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
-import speak from "./pollyHelper"
+// import speak from "./pollyHelper"
 let camera, mixer
 let renderer
 let scene
+let avatar
+let dictionanry
 let standAction, walkAction, runAction
 const loader = new GLTFLoader()
 init()
@@ -40,15 +42,14 @@ function init() {
     // called when the resource is loaded
     function (gltf) {
       const model = gltf.scene
-    //   console.log(model)
-      model.position.z = -2
-      model.position.y = -1
+      avatar = model
+      dictionanry=model.children[0].morphTargetDictionary
+        console.log(model.children[0].morphTargetInfluences)
+      model.position.z = -1.15
+      model.position.y = -1.5
       scene.add(model)
       // Play the first animation clip
       mixer = new THREE.AnimationMixer(model)
-      //   standAction = mixer.clipAction(gltf.animations[0])
-      //   runAction = mixer.clipAction(gltf.animations[1])
-      //   walkAction = mixer.clipAction(gltf.animations[3])
       animate()
       // Render loop
     },
@@ -63,8 +64,8 @@ function init() {
   )
 
   window.addEventListener("resize", onWindowResize)
-  //   document.getElementById("runButton").addEventListener("click", startRun)
-  // document.getElementById("standButton").addEventListener("click", idle)
+    document.getElementById("runButton").addEventListener("click", changeMorphTargetByName("viseme_O"))
+  document.getElementById("standButton").addEventListener("click", changeMorphTargetByName("13"))
   //   document.getElementById("walkButton").addEventListener("click", startWalk)
   document
     .getElementById("speak")
@@ -87,18 +88,111 @@ function render() {
   renderer.render(scene, camera)
 }
 
-// function startWalk() {
-//   mixer.stopAllAction()
-//   console.log("start walking")
-//   walkAction.play()
-// }
-// function startRun() {
-//   mixer.stopAllAction()
-//   console.log("start walking")
-//   runAction.play()
-// }
-// function idle() {
-//   mixer.stopAllAction()
-//   console.log("start walking")
-//   standAction.play()
-// }
+
+function changeMorphTargetByName(targetName) {
+  if (!avatar) {
+    console.error("Model not loaded yet.")
+    return
+  }
+
+  console.log("targetName", targetName)
+  console.log(dictionanry)
+  let targetIndex = dictionanry[targetName]
+  console.log("Index: ", targetIndex)
+
+  // Set the influence of other targets to 0 (no influence)
+  for (let i = 0; i < avatar.children[0].morphTargetInfluences.length; i++) {
+    avatar.children[0].morphTargetInfluences[i] = 0
+  }
+  avatar.children[0].morphTargetInfluences[targetIndex] = 1
+  console.log(avatar.children[0].morphTargetInfluences)
+  // Update the morph target influences
+  // avatar.children[0].updateMorphTargets()
+}
+
+function speak(text) {
+  const visemeMap = {
+    // Consonants
+    k: "viseme_kk",
+    "@": "viseme_aa",
+    t: "viseme_PP",
+    o: "viseme_O",
+    a: "viseme_E",
+    r: "viseme_I",
+    i: "viseme_O",
+    u: "viseme_U",
+    sil: "viseme_sil",
+  }
+
+  const visemes = [
+    {
+      time: 6,
+      type: "viseme",
+      value: "k",
+    },
+    {
+      time: 72,
+      type: "viseme",
+      value: "@",
+    },
+    {
+      time: 104,
+      type: "viseme",
+      value: "t",
+    },
+    {
+      time: 162,
+      type: "viseme",
+      value: "o",
+    },
+    {
+      time: 448,
+      type: "viseme",
+      value: "sil",
+    },
+    {
+      time: 639,
+      type: "viseme",
+      value: "k",
+    },
+    {
+      time: 661,
+      type: "viseme",
+      value: "a",
+    },
+    {
+      time: 780,
+      type: "viseme",
+      value: "a",
+    },
+    {
+      time: 824,
+      type: "viseme",
+      value: "r",
+    },
+    {
+      time: 924,
+      type: "viseme",
+      value: "i",
+    },
+    {
+      time: 1093,
+      type: "viseme",
+      value: "u",
+    },
+    {
+      time: 1370,
+      type: "viseme",
+      value: "sil",
+    },
+  ]
+  visemes.map((vis) => {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        changeMorphTargetByName(visemeMap[vis.value])
+        // setPho(vis.value) // Resolve the promise with true once setPho is completed
+        // console.log(vis)
+      }, vis.time)
+    })
+  })
+}
