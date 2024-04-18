@@ -98,12 +98,9 @@ function changeMorphTargetByName(targetName) {
     return
   }
 
-  console.log("targetName", targetName)
-  console.log(dictionanry)
   let targetIndex = dictionanry[targetName]
-  console.log("Index: ", targetIndex)
 
-  // Set the influence of other targets to 0 (no influence)
+  // Reset All influence
   for (let i = 0; i < avatar.children[0].morphTargetInfluences.length; i++) {
     avatar.children[0].morphTargetInfluences[i] = 0
   }
@@ -193,12 +190,11 @@ function speak(text) {
       value: "sil",
     },
   ]
+
   visemes.map((vis) => {
     return new Promise((resolve) => {
       setTimeout(() => {
         changeMorphTargetByName(visemeMap[vis.value])
-        // setPho(vis.value) // Resolve the promise with true once setPho is completed
-        // console.log(vis)
       }, vis.time)
     })
   })
