@@ -43,8 +43,8 @@ function init() {
     function (gltf) {
       const model = gltf.scene
       avatar = model
-      dictionanry=model.children[0].morphTargetDictionary
-        console.log(model.children[0].morphTargetInfluences)
+      dictionanry = model.children[0].morphTargetDictionary
+      console.log(model.children[0].morphTargetInfluences)
       model.position.z = -1.15
       model.position.y = -1.5
       scene.add(model)
@@ -64,8 +64,12 @@ function init() {
   )
 
   window.addEventListener("resize", onWindowResize)
-    document.getElementById("runButton").addEventListener("click", changeMorphTargetByName("viseme_O"))
-  document.getElementById("standButton").addEventListener("click", changeMorphTargetByName("13"))
+  document
+    .getElementById("runButton")
+    .addEventListener("click", changeMorphTargetByName("viseme_O"))
+  document
+    .getElementById("standButton")
+    .addEventListener("click", changeMorphTargetByName("13"))
   //   document.getElementById("walkButton").addEventListener("click", startWalk)
   document
     .getElementById("speak")
@@ -88,7 +92,6 @@ function render() {
   renderer.render(scene, camera)
 }
 
-
 function changeMorphTargetByName(targetName) {
   if (!avatar) {
     console.error("Model not loaded yet.")
@@ -105,23 +108,27 @@ function changeMorphTargetByName(targetName) {
     avatar.children[0].morphTargetInfluences[i] = 0
   }
   avatar.children[0].morphTargetInfluences[targetIndex] = 1
-  console.log(avatar.children[0].morphTargetInfluences)
-  // Update the morph target influences
-  // avatar.children[0].updateMorphTargets()
 }
 
 function speak(text) {
   const visemeMap = {
-    // Consonants
-    k: "viseme_kk",
-    "@": "viseme_aa",
-    t: "viseme_PP",
-    o: "viseme_O",
-    a: "viseme_E",
-    r: "viseme_I",
-    i: "viseme_O",
-    u: "viseme_U",
     sil: "viseme_sil",
+    p: "viseme_PP",
+    t: "viseme_TH",
+    S: "viseme_SS",
+    T: "viseme_TH",
+    f: "viseme_FF",
+    k: "viseme_kk",
+    i: "viseme_I",
+    r: "viseme_R",
+    s: "viseme_SS",
+    u: "viseme_U",
+    "@": "viseme_aa",
+    a: "viseme_aa",
+    e: "viseme_E",
+    E: "viseme_E",
+    o: "viseme_O",
+    O: "viseme_O",
   }
 
   const visemes = [
