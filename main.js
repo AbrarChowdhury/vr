@@ -1,6 +1,7 @@
 import * as THREE from "three"
 import { VRButton } from "three/addons/webxr/VRButton.js"
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js"
+import { visemeMap, visemes } from "./speak"
 // import speak from "./pollyHelper"
 let camera, mixer
 let renderer
@@ -136,98 +137,9 @@ function changeMorphTargetByName(targetName) {
   }
   lastVisemeIndex = thisVisemeIndex
   thisVisemeIndex = dictionanry[targetName]
-
-  // Reset All influence
-  // for (let i = 0; i < avatar.children[0].morphTargetInfluences.length; i++) {
-  //   avatar.children[0].morphTargetInfluences[i] = 0
-  // }
-  // avatar.children[0].morphTargetInfluences[targetIndex] = 1
 }
 
 function speak(text) {
-  const visemeMap = {
-    sil: "viseme_sil",
-    p: "viseme_PP",
-    t: "viseme_TH",
-    S: "viseme_SS",
-    T: "viseme_TH",
-    f: "viseme_FF",
-    k: "viseme_kk",
-    i: "viseme_I",
-    r: "viseme_R",
-    s: "viseme_SS",
-    u: "viseme_U",
-    "@": "viseme_aa",
-    a: "viseme_aa",
-    e: "viseme_E",
-    E: "viseme_E",
-    o: "viseme_O",
-    O: "viseme_O",
-  }
-
-  const visemes = [
-    {
-      time: 6,
-      type: "viseme",
-      value: "k",
-    },
-    {
-      time: 72,
-      type: "viseme",
-      value: "@",
-    },
-    {
-      time: 104,
-      type: "viseme",
-      value: "t",
-    },
-    {
-      time: 162,
-      type: "viseme",
-      value: "o",
-    },
-    {
-      time: 448,
-      type: "viseme",
-      value: "sil",
-    },
-    {
-      time: 639,
-      type: "viseme",
-      value: "k",
-    },
-    {
-      time: 661,
-      type: "viseme",
-      value: "a",
-    },
-    {
-      time: 780,
-      type: "viseme",
-      value: "a",
-    },
-    {
-      time: 824,
-      type: "viseme",
-      value: "r",
-    },
-    {
-      time: 924,
-      type: "viseme",
-      value: "i",
-    },
-    {
-      time: 1093,
-      type: "viseme",
-      value: "u",
-    },
-    {
-      time: 1370,
-      type: "viseme",
-      value: "sil",
-    },
-  ]
-
   visemes.map((vis) => {
     return new Promise((resolve) => {
       setTimeout(() => {
